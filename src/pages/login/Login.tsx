@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import React from 'react'
@@ -15,8 +14,8 @@ export default function Login() {
     register,
     handleSubmit,
     watch,
-    getValues,
-    setError,
+    // getValues,
+    // setError,
     formState: { errors }
   } = useForm<useFormType_Login>({
     resolver: yupResolver(schemaValidate_Login)
@@ -32,7 +31,7 @@ export default function Login() {
       alert('that bai')
       console.log(error)
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       if (isAxiosUnprocessableEntityError<ResponeApi<useFormType_Login>>(error)) {
         //ResponeApi<Omit<useFormType, 'confirm_password'>>
 
@@ -41,14 +40,10 @@ export default function Login() {
       }
     }
   })
-  const onSubmit = handleSubmit(
-    (data) => {
-      LoginAccountMutation.mutate(data)
-    },
-    (data) => {
-      console.log(getValues())
-    }
-  )
+  const onSubmit = handleSubmit((data) => {
+    LoginAccountMutation.mutate(data)
+  })
+  console.log(watch())
 
   return (
     <div className='bg-orange-300 py-11'>
@@ -84,6 +79,7 @@ export default function Login() {
               register={register}
               type='password'
             />
+
             <button
               type='submit'
               className='w-full mt-2 px-4 py-3 rounded-full border text-center bg-amber-400 hover:bg-black hover:text-amber-400'

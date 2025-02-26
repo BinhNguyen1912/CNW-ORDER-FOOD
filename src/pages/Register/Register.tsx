@@ -30,7 +30,7 @@ export default function Register() {
     },
     onError: (error) => {
       alert('that bai')
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       if (isAxiosUnprocessableEntityError<ResponeApi<Omit<useFormType, 'confirm_password'>>>(error)) {
         //ResponeApi<Omit<useFormType, 'confirm_password'>>
         console.log(isAxiosUnprocessableEntityError<{ error: string; message: string; statusCode: string }>(error))
