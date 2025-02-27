@@ -31,7 +31,6 @@ export default function Login() {
       alert('that bai')
       console.log(error)
 
-       
       if (isAxiosUnprocessableEntityError<ResponeApi<useFormType_Login>>(error)) {
         //ResponeApi<Omit<useFormType, 'confirm_password'>>
 

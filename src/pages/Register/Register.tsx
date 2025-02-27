@@ -86,25 +86,6 @@ export default function Register() {
           </div>
           <form action='' className='w-1/2 rounded-xl  bg-white px-8 py-5 shadow-sm' onSubmit={onSubmit} noValidate>
             <div className='text-black mb-7 text-3xl font-bold text-center'>Đăng ký</div>
-            {/* <div className='mt-1'>
-              <input
-                type='email'
-                className='p-3 w-full outline-none border rounded-full border-gray-300 focus:border-gray-950 focus:shadow-sm'
-                placeholder='Email'
-                {...register('email', rules.email)}
-              />
-              <div className='mt-1 text-red-700 min-h-[1.25rem] text-sm ml-2'>{errors.email?.message}</div>
-            </div> */}
-            {/* <div className='mt-1'>
-              <input
-                type='password'
-                className='p-3 w-full rounded-full outline-none border border-gray-300 focus:border-gray-950 focus:shadow-sm'
-                placeholder='password'
-                {...register('password', rules.password)}
-                autoComplete='on'
-              />
-              <div className='mt-1 text-red-700 min-h-[1.25rem] text-sm ml-2'>{errors.password?.message}</div>
-            </div> */}
             <Input
               className='mt-1'
               errorsMessage={errors.email?.message as string}

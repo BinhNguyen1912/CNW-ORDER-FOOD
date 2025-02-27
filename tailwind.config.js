@@ -8,7 +8,8 @@ export default {
       },
       colors: {
         logo: '#F59F62',
-        link: '#0055AA'
+        link: '#0055AA',
+        header_color: '#E2DCCC'
       }
     }
   },
