@@ -1,7 +1,7 @@
-import { ResponeApi } from './untill.type'
+import { SuccessResponeApi } from './untill.type'
 import { User } from './user.type'
 
-export type authRespone = ResponeApi<{
+export type authRespone = SuccessResponeApi<{
   user: User
   access_token: string
 }>

@@ -5,7 +5,9 @@ const auth = '/auth'
 export const registerByUser = (body: { email: string; password: string; phone: string; name: string }) => {
   return http.post<authRespone>(auth + '/registerByUser', body)
 }
-
 export const login = (body: useFormType_Login) => {
   return http.post<authRespone>(auth + '/login', body)
+}
+export const logout = () => {
+  return http.get<authRespone>(auth + '/logout')
 }

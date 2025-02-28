@@ -2,16 +2,23 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { registerByUser } from 'src/api/auth.api'
+import { path } from 'src/common/path'
+import ButtonForSpam from 'src/components/ButtonForSpam/ButtonForSpam'
 import Input from 'src/components/Input'
-import { ResponeApi } from 'src/types/untill.type'
+import { AppContext } from 'src/contexts/App.Context'
+import { authRespone } from 'src/types/auth.type'
+import { ErrorResponeApi } from 'src/types/untill.type'
 import { isAxiosUnprocessableEntityError } from 'src/Until/FixErrorFromAxios'
 import { schemaValidate, useFormType } from 'src/Until/rules'
 
 export default function Register() {
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const navigate = useNavigate() //su dung thang nay de chuyen huong trang
   const {
     register,
     handleSubmit,
@@ -24,17 +31,25 @@ export default function Register() {
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<useFormType, 'confirm_password'>) => registerByUser(body),
     onSuccess: (data) => {
-      console.log('success', data)
-      // toast()
-      alert('Gui thanh cong')
+      console.log(data.data.data)
+
+      toast.success((data.data as authRespone).message, {
+        style: {
+          backgroundColor: ' #ffff',
+          color: 'black',
+          borderRadius: '5px',
+          fontSize: '16px'
+        },
+        autoClose: 2000,
+        position: 'top-right'
+      })
+      setIsAuthenticated(true)
+      setProfile(data.data.data.user)
+      navigate('/')
     },
     onError: (error) => {
-      alert('that bai')
-
-      if (isAxiosUnprocessableEntityError<ResponeApi<Omit<useFormType, 'confirm_password'>>>(error)) {
+      if (isAxiosUnprocessableEntityError<ErrorResponeApi<Omit<useFormType, 'confirm_password'>>>(error)) {
         //ResponeApi<Omit<useFormType, 'confirm_password'>>
-        console.log(isAxiosUnprocessableEntityError<{ error: string; message: string; statusCode: string }>(error))
-        console.log(error)
 
         const formError = error.response?.data
         if (formError) {
@@ -126,10 +141,18 @@ export default function Register() {
               register={register}
               type='text'
             />
-            <button className='w-full mt-2 px-4 py-3 rounded-full border text-center bg-amber-400'>ĐĂNG KÝ</button>
+
+            <ButtonForSpam
+              isLoading={registerAccountMutation.isPending}
+              disabled={registerAccountMutation.isPending}
+              type='submit'
+              className='w-full mt-2 px-4 py-3 rounded-full border text-center bg-amber-400 hover:bg-black hover:text-amber-400'
+            >
+              ĐĂNG KÝ
+            </ButtonForSpam>
             <div className='flex text-sm mt-4 justify-center'>
               <span>Bạn đã có tài khoản ?</span>
-              <Link to='/login' className='text-red-600 '>
+              <Link to={path.login} className='text-red-600 '>
                 Đăng nhập
               </Link>
             </div>

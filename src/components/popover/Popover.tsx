@@ -103,7 +103,7 @@ export default function Popover({ PopoverComponent, children }: props) {
                 transition={{ duration: 0.2 }}
               >
                 <span
-                  className='border-x-transparent border-t-transparent border-b-white border-[11px] z-50 absolute z-10'
+                  className='border-x-transparent border-t-transparent border-b-white border-[11px] z-50 absolute'
                   ref={arrowRef}
                   style={{
                     left: middlewareData.arrow?.x ?? 0,

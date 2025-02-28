@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <div className='App'>{route}</div>
-      <ToastContainer />
+      <ToastContainer hideProgressBar={true} />
     </>
   )
 }

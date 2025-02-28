@@ -1,15 +1,22 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { login } from 'src/api/auth.api'
+import { path } from 'src/common/path'
+import ButtonForSpam from 'src/components/ButtonForSpam/ButtonForSpam'
 import Input from 'src/components/Input'
-import { ResponeApi } from 'src/types/untill.type'
+import { AppContext } from 'src/contexts/App.Context'
+import { authRespone } from 'src/types/auth.type'
+import { ErrorResponeApi } from 'src/types/untill.type'
 import { isAxiosUnprocessableEntityError } from 'src/Until/FixErrorFromAxios'
 import { schemaValidate_Login, useFormType_Login } from 'src/Until/rules'
 
 export default function Login() {
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const navigate = useNavigate() //su dung thang nay de chuyen huong trang
   const {
     register,
     handleSubmit,
@@ -20,18 +27,25 @@ export default function Login() {
   } = useForm<useFormType_Login>({
     resolver: yupResolver(schemaValidate_Login)
   }) //lay ra 3 cai quan trong nhat
-  const LoginAccountMutation = useMutation({
+  const LoginMutation = useMutation({
     mutationFn: (body: useFormType_Login) => login(body),
     onSuccess: (data) => {
-      console.log('success', data)
-      // toast()
-      alert('Gui thanh cong')
+      toast.success((data.data as authRespone).message, {
+        style: {
+          backgroundColor: ' #ffff',
+          color: 'black',
+          borderRadius: '5px',
+          fontSize: '16px'
+        },
+        autoClose: 2000,
+        position: 'top-right'
+      })
+      setIsAuthenticated(true)
+      setProfile(data.data.data.user)
+      navigate('/')
     },
     onError: (error) => {
-      alert('that bai')
-      console.log(error)
-
-      if (isAxiosUnprocessableEntityError<ResponeApi<useFormType_Login>>(error)) {
+      if (isAxiosUnprocessableEntityError<ErrorResponeApi<useFormType_Login>>(error)) {
         //ResponeApi<Omit<useFormType, 'confirm_password'>>
 
         const formError = error.response?.data
@@ -40,7 +54,7 @@ export default function Login() {
     }
   })
   const onSubmit = handleSubmit((data) => {
-    LoginAccountMutation.mutate(data)
+    LoginMutation.mutate(data)
   })
   console.log(watch())
 
@@ -79,17 +93,19 @@ export default function Login() {
               type='password'
             />
 
-            <button
+            <ButtonForSpam
+              isLoading={LoginMutation.isPending}
+              disabled={LoginMutation.isPending}
               type='submit'
               className='w-full mt-2 px-4 py-3 rounded-full border text-center bg-amber-400 hover:bg-black hover:text-amber-400'
             >
               ĐĂNG NHẬP
-            </button>
+            </ButtonForSpam>
             <div className='mt-3 flex justify-between items-center text-sm '>
               <Link to='ForgotPassword'>
                 <p className='text-blue-800'>Quên mật khẩu ?</p>
               </Link>
-              <Link to='/register'>
+              <Link to={path.register}>
                 <p className='text-blue-800'>Đăng ký</p>
               </Link>
             </div>

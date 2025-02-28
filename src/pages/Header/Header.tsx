@@ -13,14 +13,40 @@
 // } from '@floating-ui/react'
 // import { AnimatePresence, motion } from 'framer-motion'
 // import { useRef, useState } from 'react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { logout } from 'src/api/auth.api'
+import { path } from 'src/common/path'
+import ItemAddPopover from 'src/components/ItemAddPopover/ItemAddPopover'
 import Popover from 'src/components/popover/Popover'
 import QualityNotification from 'src/components/QualityNotification/QualityNotification'
+import { AppContext } from 'src/contexts/App.Context'
+import { authRespone } from 'src/types/auth.type'
+import { clearLS } from 'src/Until/auth'
 
 export default function Header() {
   //Poopover
   const [, setOpen] = useState(false)
+  const { setIsAuthenticated, setProfile, profile } = useContext(AppContext)
+  const navigate = useNavigate()
+  const LogoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: (data) => {
+      clearLS()
+      toast.success((data.data as authRespone).message || '')
+      setIsAuthenticated(false)
+      setProfile(null)
+      navigate('/')
+    },
+    onError: (data) => {
+      console.log(data)
+    }
+  })
+  const handleLogout = () => {
+    LogoutMutation.mutate()
+  }
   // const arrowRef = useRef(null) //dung de tham chieu den mui ten
   // const { refs, floatingStyles, context, middlewareData } = useFloating({
   //   open: open, //kiểm tra trạng thái mở popover
@@ -55,7 +81,7 @@ export default function Header() {
     <header className='fixed top-0 left-0 right-0 z-50 bg-white shadow-md'>
       <div className='w-full mx-auto'>
         <div className='flex justify-between px-2 py-2 bg-black text-white'>
-          <div className='flex items-center hover:font-bold'>
+          <div className='flex items-center hover:font-bold hover:text-xl'>
             <div className='flex items-center'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -132,37 +158,71 @@ export default function Header() {
                 </div>
               }
             />
+
             <Popover
               children={
                 <div className='flex items-center ml-4 hover:text-gray-400 z-50'>
                   <div className='w-8 h-8 mr-2 flex-shrink-0'>
-                    <img
-                      src='../../../public/images/z6354421555746_24adbdf482bd83cd2efe46706cb0abc1.jpg'
-                      alt=''
-                      className='w-full h-full object-cover rounded-full'
-                    />
+                    <img src={profile?.avatar} alt='' className='w-full h-full object-cover rounded-full' />
                   </div>
-                  <nav className='text-xs'>Nguyễn Anh Bình</nav>
+                  <nav className='text-xs'>{profile?.email || ''}</nav>
                 </div>
               }
               PopoverComponent={
                 <div className='bg-black shadow-md rounded-sm  text-white text-sm'>
-                  <div className='flex flex-col py-1 px-2 text-center'>
+                  <div className='flex flex-col py-1 px-2 text-start'>
                     <Link
-                      to='/'
-                      className='px-3 py-2 text-white hover:text-orange-300 border-b '
+                      to='https://google.com'
+                      target='_blank'
+                      className='px-3 py-2 flex items-center text-white hover:text-orange-300 border-b '
                       onClick={handleSelectPopover}
                     >
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='currentColor'
+                        className='w-4 h-4 mr-1'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          d='M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
                       Tài khoản của tôi
                     </Link>
                     <Link
-                      to='/'
-                      className='px-3 py-2 text-white hover:text-orange-300 border-b'
+                      to={path.register}
+                      className='px-3 py-2 flex items-center text-white hover:text-orange-300 border-b'
                       onClick={handleSelectPopover}
                     >
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='currentColor'
+                        className='w-4 h-4 mr-1'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          d='M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 0 0 4.25 22.5h15.5a1.875 1.875 0 0 0 1.865-2.071l-1.263-12a1.875 1.875 0 0 0-1.865-1.679H16.5V6a4.5 4.5 0 1 0-9 0ZM12 3a3 3 0 0 0-3 3v.75h6V6a3 3 0 0 0-3-3Zm-3 8.25a3 3 0 1 0 6 0v-.75a.75.75 0 0 1 1.5 0v.75a4.5 4.5 0 1 1-9 0v-.75a.75.75 0 0 1 1.5 0v.75Z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
                       Giỏ hàng
                     </Link>
-                    <button className='px-3 py-2 hover:text-orange-300' onClick={handleSelectPopover}>
+                    <button className='px-3 py-2 flex items-center hover:text-orange-300' onClick={handleLogout}>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='currentColor'
+                        className='w-4 h-4 mr-1'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          d='M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6Zm-5.03 4.72a.75.75 0 0 0 0 1.06l1.72 1.72H2.25a.75.75 0 0 0 0 1.5h10.94l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 0 0-1.06 0Z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
                       Đăng xuất
                     </button>
                   </div>
@@ -189,73 +249,57 @@ export default function Header() {
               />
             }
             PopoverComponent={
-              <div className='bg-white relative shadow-sm rounded-sm border border-gray-200 max-w-[600px] text-sm'>
+              <div className='bg-white relative shadow-sm rounded-sm border border-gray-200 max-h-[450px] max-w-[600px] text-sm'>
                 <div className='p-2'>
                   <div className='text-gray-400 capitalize'>Các sản phẩm vừa thêm</div>
-                  <div className='mt-5'>
-                    <div className='mt-4 flex items-center'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D'
-                          alt='anhsp'
-                          className='w-11 h-11 object-cover'
-                        />
-                      </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Món ăn không thể nào không được đúng không quý vị ơii</div>
-                      </div>
-                      <div className='flex-grow ml-2 text-red-500'>12.000 đ</div>
-                    </div>
-                    <div className='mt-4 flex items-center'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D'
-                          alt='anhsp'
-                          className='w-11 h-11 object-cover'
-                        />
-                      </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Món ăn không thể nào không được đúng không quý vị ơii</div>
-                      </div>
-                      <div className='flex-grow ml-2 text-red-500'>12.000 đ</div>
-                    </div>
-                    <div className='mt-4 flex items-center'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D'
-                          alt='anhsp'
-                          className='w-11 h-11 object-cover'
-                        />
-                      </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Món ăn không thể nào không được đúng không quý vị ơii</div>
-                      </div>
-                      <div className='flex-grow ml-2 text-red-500'>12.000 đ</div>
-                    </div>
-                    <div className='mt-4 flex items-center'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D'
-                          alt='anhsp'
-                          className='w-11 h-11 object-cover'
-                        />
-                      </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Món ăn không thể nào không được đúng không quý vị ơii</div>
-                      </div>
-                      <div className='flex-grow ml-2 text-red-500'>12.000 đ</div>
-                    </div>
+                  <div className='mt-5 h-[300px] overflow-auto'>
+                    <ItemAddPopover
+                      price='12.000'
+                      src_Image='https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc_large.png'
+                      title='Trà Xanh Espresso Marble'
+                    />
+                    <ItemAddPopover
+                      price='12.000'
+                      src_Image='https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc_large.png'
+                      title='Trà Xanh Espresso Marble'
+                    />
+                    <ItemAddPopover
+                      price='12.000'
+                      src_Image='https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc_large.png'
+                      title='Trà Xanh Espresso Marble'
+                    />
+                    <ItemAddPopover
+                      price='12.000'
+                      src_Image='https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc_large.png'
+                      title='Trà Xanh Espresso Marble'
+                    />
+                    <ItemAddPopover
+                      price='12.000'
+                      src_Image='https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc_large.png'
+                      title='Trà Xanh Espresso Marble'
+                    />
+                    <ItemAddPopover
+                      price='12.000'
+                      src_Image='https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc_large.png'
+                      title='Trà Xanh Espresso Marble'
+                    />
                   </div>
                   <div className='mt-5'>
                     <div className='flex mt-6 justify-between'>
                       <Link to='/'>
-                        <button className='capitalize bg-black text-white hover:bg-opacity-80 rounded-md px-2 py-3'>
-                          thanh toán
+                        <button
+                          type='button'
+                          className='text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 hover:bg-opacity-80 focus:ring-4 hover:px-4 focus:outline-none focus:ring-gray-300 px-2 py-3 font-medium rounded-lg text-sm text-center dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800'
+                        >
+                          Thánh Toán
                         </button>
                       </Link>
                       <Link to='/'>
-                        <button className='capitalize bg-black text-white hover:bg-opacity-80 rounded-md px-2 py-3'>
-                          đến giỏ hàng
+                        <button
+                          type='button'
+                          className='text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 hover:bg-opacity-80 focus:ring-4 hover:px-4 focus:outline-none focus:ring-gray-300 px-2 py-3 font-medium rounded-lg text-sm text-center dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800'
+                        >
+                          Đến giỏ hàng
                         </button>
                       </Link>
                     </div>
