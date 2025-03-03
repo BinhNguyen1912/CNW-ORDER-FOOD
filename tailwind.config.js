@@ -4,12 +4,17 @@ export default {
   theme: {
     extend: {
       backgroundColor: {
-        bg_logo: '#F59F62'
+        bg_footer: '#000000D9'
       },
       colors: {
         logo: '#F59F62',
         link: '#0055AA',
-        header_color: '#E2DCCC'
+        header_color: '#E2DCCC',
+        bg_footer: '#000000D9'
+      },
+      fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+        playfair: ['Playfair Display', 'serif']
       }
     }
   },

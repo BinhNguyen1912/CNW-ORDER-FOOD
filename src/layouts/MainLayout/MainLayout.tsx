@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import FooterCommom from 'src/components/folder'
+import FooterCommom from 'src/components/Footer'
 import Header from 'src/pages/Header'
 interface props {
   children?: ReactNode

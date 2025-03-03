@@ -16,7 +16,7 @@ import { ErrorResponeApi } from 'src/types/untill.type'
 import { isAxiosUnprocessableEntityError } from 'src/Until/FixErrorFromAxios'
 import { schemaValidate, useFormType } from 'src/Until/rules'
 
-export default function Register() {
+export default function Register1() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate() //su dung thang nay de chuyen huong trang
   const {
@@ -52,6 +52,7 @@ export default function Register() {
         //ResponeApi<Omit<useFormType, 'confirm_password'>>
 
         const formError = error.response?.data
+        toast.error(formError?.message, { autoClose: 2000, position: 'top-right' })
         if (formError) {
           setError('email', {
             message: formError.message,
@@ -79,28 +80,28 @@ export default function Register() {
   // console.log(value)
 
   return (
-    <div className='bg-orange-300 py-11'>
-      <div className='max-w-7xl px-4 mx-auto '>
-        <div className='flex justify-center   '>
-          <div className='w-1/3 pr-7 lg:block md:hidden sm:hidden'>
-            <img
-              src='https://i.pinimg.com/736x/0b/18/15/0b18157ed9d98cd5526c5844013dca00.jpg'
-              alt=''
-              className='w-full h-auto object-cover rounded-3xl '
-            />
-            <div className='text-center py-3 px-5 mt-5'>
-              <p>
-                <b>Retaurent</b> xin chân thành cảm ơn quý khách hàng thân yêu đã sử dụng dịch vụ của chúng tôi . Mọi
-                thắc mắc xin liên hệ qua <br /> Fanpage : "{' '}
-                <Link to='https://google.com' className='text-blue-700' target='_blank'>
-                  Google
-                </Link>{' '}
-                "
-              </p>
+    <div className=''>
+      <div className='max-w-7xl px-4 mx-auto'>
+        <div className='flex h-auto justify-center'>
+          <form
+            action=''
+            className='w-1/2 relative rounded-3xl border-black border-[3px]  bg-white text-center px-8 py-5 shadow-sm'
+            onSubmit={onSubmit}
+            noValidate
+          >
+            <div
+              className='absolute top-[-10%] left-[40%]
+                 p-4 bg-black text-white border-[3px] border-black w-[80px] h-[80px] flex justify-center items-center rounded-full'
+            >
+              <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-12 h-12'>
+                <path
+                  fillRule='evenodd'
+                  d='M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z'
+                  clipRule='evenodd'
+                />
+              </svg>
             </div>
-          </div>
-          <form action='' className='w-1/2 rounded-xl  bg-white px-8 py-5 shadow-sm' onSubmit={onSubmit} noValidate>
-            <div className='text-black mb-7 text-3xl font-bold text-center'>Đăng ký</div>
+            <div className='text-black mb-7 pt-[30px] text-3xl font-bold'>Đăng ký</div>
             <Input
               className='mt-1'
               errorsMessage={errors.email?.message as string}
@@ -146,7 +147,7 @@ export default function Register() {
               isLoading={registerAccountMutation.isPending}
               disabled={registerAccountMutation.isPending}
               type='submit'
-              className='w-full mt-2 px-4 py-3 rounded-full border text-center bg-amber-400 hover:bg-black hover:text-amber-400'
+              className='w-full mt-2 px-4 py-3 rounded-full border text-center hover:font-bold bg-black text-white hover:bg-white hover:text-black hover:border-black '
             >
               ĐĂNG KÝ
             </ButtonForSpam>

@@ -16,7 +16,7 @@ export default function Input({ className, errorsMessage, placeholder, register,
     <div className={className}>
       <input
         type={type}
-        className='p-3 w-full outline-none border rounded-full border-gray-300 focus:border-gray-950 focus:shadow-sm'
+        className='p-3 w-full outline-none border rounded-full border-gray-300 focus:border-black focus:border-[1.5px] focus:shadow-sm'
         placeholder={placeholder}
         /*Neu ta con de thuoc tinh name cura input se loi vi
       register co trar ve name nen bi sinh loi => xoa name 
@@ -25,7 +25,7 @@ export default function Input({ className, errorsMessage, placeholder, register,
         {...register(name, rules)}
         autoComplete='on'
       />
-      <div className='mt-1 text-red-700 min-h-[1.25rem] text-sm ml-2'>{errorsMessage}</div>
+      <div className='mt-1 text-start text-red-700 min-h-[1.25rem] text-sm ml-2'>{errorsMessage}</div>
     </div>
   )
 }
